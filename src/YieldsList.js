@@ -28,15 +28,24 @@ const styles = theme => ({
     borderRadius: 5,
     boxShadow: "0 3px 5px 2px rgba(0, 0, 0, .1)"
   },
-  yieldLabel: {
+  greenYieldLabel: {
     //marginLeft: 100,
     position: "absolute",
     right: "20px",
     color: "green"
   },
+  redYieldLabel: {
+    //marginLeft: 100,
+    position: "absolute",
+    right: "20px",
+    color: "red"
+  },
   appBar: {
         top: "auto",
         bottom: 0
+  },
+  backNavLink: {
+    cursor: "pointer"
   }
   
 });
@@ -45,7 +54,8 @@ class YieldsList extends React.Component {
 
   state = {
     unfilteredCurrencyYieldList: [],
-    displayCurrencyYieldList: []
+    displayCurrencyYieldList: [],
+    selectedCurrencyTimeSeries: null
   };
 
   componentDidMount() {
@@ -67,7 +77,24 @@ class YieldsList extends React.Component {
     });
   }
 
-  handleCurrencyClicked = event => {
+  handleCurrencyClicked = (currency, event) => {
+    const unfilteredCurrencyYieldList = this.state.unfilteredCurrencyYieldList;
+    var currencyClickedTimeSeries = unfilteredCurrencyYieldList.filter(function(currency_snapshot) {
+      return currency_snapshot.currency == currency.currency;
+    });
+    currencyClickedTimeSeries.forEach(function (item, index) {
+      item.date = new Date(item.timestamp)
+    });
+    this.setState({
+      selectedCurrencyTimeSeries: currencyClickedTimeSeries
+    });
+    console.log(currencyClickedTimeSeries);
+  };
+
+  handleBackClick = () => {
+    this.setState({
+      selectedCurrencyTimeSeries: null
+    });
   };
 
   render() {
@@ -75,46 +102,111 @@ class YieldsList extends React.Component {
 
     const currencyYields = this.state.displayCurrencyYieldList;
 
-    return (
-      <div className={classes.container}>
-        <Breadcrumbs
-            separator={<NavigateNextIcon fontSize="medium" />}
-            aria-label="breadcrumb"
+    const selectedCurrencyTimeSeries = this.state.selectedCurrencyTimeSeries;
+
+    if(selectedCurrencyTimeSeries == null){
+
+      return (
+        <div className={classes.container}>
+          <Breadcrumbs
+              separator={<NavigateNextIcon fontSize="medium" />}
+              aria-label="breadcrumb"
+          >
+            <Typography variant="h6" color="inherit" className={classes.header}>
+                  Compound Your Crypto
+              </Typography>
+          </Breadcrumbs>
+          <List className={classes.list}>
+          {currencyYields.map((data) => (
+            <ListItem color="inherit" button onClick={(event) => this.handleCurrencyClicked(data, event)}>
+              <Typography variant="h6" color="textPrimary">{data.currency}</Typography>
+              <Typography className={classes.greenYieldLabel} variant="h6">{(data.yield * 100).toFixed(2) + "%"}</Typography>
+            </ListItem>
+          ))}
+        </List>
+        <AppBar
+          position="fixed"
+          color="inherit"
+          className={classes.appBar}
+          elevation={0}
         >
-          <Typography variant="h6" color="inherit" className={classes.header}>
-                Compound Your Crypto
-            </Typography>
-        </Breadcrumbs>
-        <List className={classes.list}>
-        {currencyYields.map((data) => (
-          <ListItem color="inherit" button>
-            <Typography variant="h6" color="textPrimary">{data.currency}</Typography>
-            <Typography className={classes.yieldLabel} variant="h6" color="textPrimary">{(data.yield * 100).toFixed(2) + "%"}</Typography>
-          </ListItem>
-        ))}
-      </List>
-      <AppBar
-        position="fixed"
-        color="inherit"
-        className={classes.appBar}
-        elevation={0}
-      >
-        <Toolbar>
-          <Link color="inherit" target="_blank" href="https://staked.us/">
-            Powered by Staked
-          </Link>
-          <div className={classes.grow} />
-            <Link color="inherit" target="_blank" href="https://github.com/samMitchell650/StakedAPIDemo">
-                <Tooltip title="Source Code">
-                    <IconButton edge="end" color="inherit">
-                            <CodeIcon />
-                    </IconButton>
-                </Tooltip>
+          <Toolbar>
+            <Link color="inherit" target="_blank" href="https://staked.us/">
+              Powered by Staked
             </Link>
-        </Toolbar>
-      </AppBar>
-      </div>
-    );
+            <div className={classes.grow} />
+              <Link color="inherit" target="_blank" href="https://github.com/samMitchell650/StakedAPIDemo">
+                  <Tooltip title="Source Code">
+                      <IconButton edge="end" color="inherit">
+                              <CodeIcon />
+                      </IconButton>
+                  </Tooltip>
+              </Link>
+          </Toolbar>
+        </AppBar>
+        </div>
+      );
+
+    }else{
+      const selectedCurrency = this.state.selectedCurrencyTimeSeries[0];
+      console.log(selectedCurrency);
+      const realYield = selectedCurrency.yield - selectedCurrency.inflation_total;
+      var realYieldLabelClassname = classes.greenYieldLabel;
+      if(realYield < 0){
+        realYieldLabelClassname = classes.redYieldLabel;
+      }
+      return (
+      <div className={classes.container}>
+      <Breadcrumbs
+          separator={<NavigateNextIcon fontSize="medium" />}
+          aria-label="breadcrumb"
+      >
+
+        <Link className={classes.backNavLink} color="inherit" variant="h6" onClick={this.handleBackClick}>
+          Compound Your Crypto
+        </Link>
+
+        <Typography variant="h6" color="textPrimary">
+          {selectedCurrency.currency}
+        </Typography>
+      </Breadcrumbs>
+      <List className={classes.list}>
+        <ListItem color="inherit" >
+            <Typography color="textPrimary">Nominal Yield</Typography>
+            <Typography className={classes.greenYieldLabel} >{(selectedCurrency.yield * 100).toFixed(2) + "%"}</Typography>
+        </ListItem>
+        <ListItem color="inherit">
+          <Typography color="textPrimary">Inflation</Typography>
+          <Typography className={classes.redYieldLabel} color="red">{(selectedCurrency.inflation_total * 100).toFixed(2) + "%"}</Typography>
+        </ListItem>
+        <ListItem color="inherit">
+          <Typography color="textPrimary">Real Yield</Typography>
+          <Typography className={realYieldLabelClassname} >{((selectedCurrency.yield - selectedCurrency.inflation_total) * 100).toFixed(2) + "%"}</Typography>
+        </ListItem>
+    </List>
+    <AppBar
+      position="fixed"
+      color="inherit"
+      className={classes.appBar}
+      elevation={0}
+    >
+      <Toolbar>
+        <Link color="inherit" target="_blank" href="https://staked.us/">
+          Powered by Staked
+        </Link>
+        <div className={classes.grow} />
+          <Link color="inherit" target="_blank" href="https://github.com/samMitchell650/StakedAPIDemo">
+              <Tooltip title="Source Code">
+                  <IconButton edge="end" color="inherit">
+                          <CodeIcon />
+                  </IconButton>
+              </Tooltip>
+          </Link>
+      </Toolbar>
+    </AppBar>
+    </div>
+  );
+    }
   }
 }
 
