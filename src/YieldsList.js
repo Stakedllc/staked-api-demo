@@ -15,7 +15,36 @@ import Link from "@material-ui/core/Link";
 import Breadcrumbs from "@material-ui/core/Breadcrumbs";
 import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 import Tooltip from '@material-ui/core/Tooltip';
+import Divider from '@material-ui/core/Divider';
 import api from "./api.js";
+import {Line} from 'react-chartjs-2';
+
+const data = {
+  labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+  datasets: [
+    {
+      label: 'My First dataset',
+      fill: false,
+      lineTension: 0.1,
+      backgroundColor: 'rgba(75,192,192,0.4)',
+      borderColor: 'rgba(75,192,192,1)',
+      borderCapStyle: 'butt',
+      borderDash: [],
+      borderDashOffset: 0.0,
+      borderJoinStyle: 'miter',
+      pointBorderColor: 'rgba(75,192,192,1)',
+      pointBackgroundColor: '#fff',
+      pointBorderWidth: 1,
+      pointHoverRadius: 5,
+      pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+      pointHoverBorderColor: 'rgba(220,220,220,1)',
+      pointHoverBorderWidth: 2,
+      pointRadius: 1,
+      pointHitRadius: 10,
+      data: [65, 59, 80, 81, 56, 55, 40]
+    }
+  ]
+};
 
 const styles = theme => ({
   container: {
@@ -148,13 +177,15 @@ class YieldsList extends React.Component {
       );
 
     }else{
-      const selectedCurrency = this.state.selectedCurrencyTimeSeries[0];
+      const selectedCurrencyTimeSeries = this.state.selectedCurrencyTimeSeries;
+      const selectedCurrency = selectedCurrencyTimeSeries[0];
       console.log(selectedCurrency);
       const realYield = selectedCurrency.yield - selectedCurrency.inflation_total;
       var realYieldLabelClassname = classes.greenYieldLabel;
       if(realYield < 0){
         realYieldLabelClassname = classes.redYieldLabel;
       }
+
       return (
       <div className={classes.container}>
       <Breadcrumbs
@@ -170,6 +201,7 @@ class YieldsList extends React.Component {
           {selectedCurrency.currency}
         </Typography>
       </Breadcrumbs>
+      <Line data={data} />
       <List className={classes.list}>
         <ListItem color="inherit" >
             <Typography color="textPrimary">Nominal Yield</Typography>
@@ -179,6 +211,7 @@ class YieldsList extends React.Component {
           <Typography color="textPrimary">Inflation</Typography>
           <Typography className={classes.redYieldLabel} color="red">{(selectedCurrency.inflation_total * 100).toFixed(2) + "%"}</Typography>
         </ListItem>
+        <Divider />
         <ListItem color="inherit">
           <Typography color="textPrimary">Real Yield</Typography>
           <Typography className={realYieldLabelClassname} >{((selectedCurrency.yield - selectedCurrency.inflation_total) * 100).toFixed(2) + "%"}</Typography>
