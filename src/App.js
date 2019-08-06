@@ -1,9 +1,6 @@
 import React from "react";
-import cookies from "react-cookies";
 import APIKeyForm from "./APIKeyForm.js";
 import YieldsList from "./YieldsList.js";
-
-
 
 class App extends React.Component {
   constructor(props) {

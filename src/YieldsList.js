@@ -7,18 +7,13 @@ import Typography from "@material-ui/core/Typography";
 import IconButton from "@material-ui/core/IconButton";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import ListItemAvatar from "@material-ui/core/ListItemAvatar";
-import ListItemText from "@material-ui/core/ListItemText";
-import ListSubheader from "@material-ui/core/ListSubheader";
 import CodeIcon from "@material-ui/icons/Code";
 import Link from "@material-ui/core/Link";
 import Breadcrumbs from "@material-ui/core/Breadcrumbs";
 import NavigateNextIcon from "@material-ui/icons/NavigateNext";
 import Tooltip from '@material-ui/core/Tooltip';
 import Divider from '@material-ui/core/Divider';
-import api from "./api.js";
 import {Line} from 'react-chartjs-2';
-
 
 const styles = theme => ({
   container: {
@@ -32,13 +27,11 @@ const styles = theme => ({
     boxShadow: "0 3px 5px 2px rgba(0, 0, 0, .1)"
   },
   greenYieldLabel: {
-    //marginLeft: 100,
     position: "absolute",
     right: "20px",
     color: "green"
   },
   redYieldLabel: {
-    //marginLeft: 100,
     position: "absolute",
     right: "20px",
     color: "red"
@@ -53,7 +46,6 @@ const styles = theme => ({
   breadcrumb: {
     marginBottom: 10
   }
-  
 });
 
 class YieldsList extends React.Component {

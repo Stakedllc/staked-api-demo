@@ -11,11 +11,7 @@
     "prop-types": "latest",
     "react": "latest",
     "react-chartjs-2": "^2.7.6",
-    "react-cookie": "3.0.4",
-    "react-cookies": "0.1.0",
-    "react-day-picker": "7.2.4",
     "react-dom": "latest",
-    "react-helmet": "5.2.0",
     "react-scripts": "^1.0.0"
   },
   "name": "staked",
