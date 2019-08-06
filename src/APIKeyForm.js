@@ -124,7 +124,7 @@ class APIKeyForm extends React.Component {
     }
 
     return (
-      <form className={classes.container} noValidate autoComplete="off">
+      <div className={classes.container}>
         <Typography variant="h6" color="inherit" className={classes.header}>
           Staked API Demo
         </Typography>
@@ -145,7 +145,7 @@ class APIKeyForm extends React.Component {
         >
           {buttonText}
         </Button>
-      </form>
+      </div>
     );
   }
 }
