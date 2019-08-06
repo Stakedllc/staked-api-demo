@@ -1,12 +1,11 @@
 import React from "react";
-import APIKeyForm from "./APIKeyForm.js";
-import YieldsList from "./YieldsList.js";
+import APIKeyForm from "./UIComponents/APIKeyForm.js";
+import Dashboard from "./UIComponents/Dashboard.js";
 
 class App extends React.Component {
   constructor(props) {
     super(props);
     this.confirmedAPIKey = this.confirmedAPIKey.bind(this);
-    this.clearAPIKey = this.clearAPIKey.bind(this);
   }
 
   state = {
@@ -21,20 +20,13 @@ class App extends React.Component {
     });
   };
 
-  clearAPIKey = () => {
-    this.setState({
-      api_key: null,
-      currencyYieldList: null
-    });
-  };
-
   render() {
     const apiKey = this.state.api_key;
     const currencyYieldList = this.state.currencyYieldList;
     if(apiKey == null || currencyYieldList == null){
       return <APIKeyForm confirmedAPIKey={this.confirmedAPIKey} />;
     }else {
-      return <YieldsList currencyYieldList={currencyYieldList} clearAPIKey={this.clearAPIKey} />;
+      return <Dashboard currencyYieldList={currencyYieldList}/>;
     }
   }
 }
