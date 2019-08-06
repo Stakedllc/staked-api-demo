@@ -1,8 +1,5 @@
 # StakedAPIDemo
 
-Project Link: http://staked-api-demo.appspot.com/
-(Note: You must use http:// because the api itself is http)
-
 This demo showcases yield information for a number of cryptocurrencies supported by Staked. 
 
 #### You can hit the /yields endpoint in your web app:
