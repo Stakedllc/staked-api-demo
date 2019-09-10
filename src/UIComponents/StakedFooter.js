@@ -32,7 +32,7 @@ class StakedFooter extends React.Component {
               Powered by Staked
             </Link>
             <div className={classes.grow} />
-              <Link color="inherit" target="_blank" href="https://github.com/samMitchell650/StakedAPIDemo">
+              <Link color="inherit" target="_blank" href="https://github.com/Stakedllc/staked-api-demo">
                   <Tooltip title="Source Code">
                       <IconButton edge="end" color="inherit">
                               <CodeIcon />
