@@ -21,49 +21,23 @@ const styles = theme => ({
 class StakingYieldList extends React.Component {
 
   state = {
-    displayCurrencyYieldList: []
+    currencyYields: []
   };
 
   componentDidMount() {
-    const retrievedCurrencyYieldList = this.props.currencyYieldList;
-    var displayCurrencyYieldList = [];
-    var latestDate = new Date(retrievedCurrencyYieldList[0].timestamp);
-    retrievedCurrencyYieldList.forEach(function (currencyData, index) {
-        var currencyDataDate = new Date(currencyData.timestamp);
-        if(currencyDataDate.getDate() == latestDate.getDate()) {
-            displayCurrencyYieldList.push(currencyData);
-        }
-      });
-    displayCurrencyYieldList.sort(function(a, b) {
-        return b.yield - a.yield;
+    var currencyYields = this.props.currencyYields;
+    currencyYields.sort(function(a, b) {
+      return b.yield - a.yield;
     });
     this.setState({
-        displayCurrencyYieldList: displayCurrencyYieldList
-    });
-  }
-
-  setUpDataForDisplay = () => {
-    const retrievedCurrencyYieldList = this.props.currencyYieldList;
-    var displayCurrencyYieldList = [];
-    var latestDate = new Date(retrievedCurrencyYieldList[0].timestamp);
-    retrievedCurrencyYieldList.forEach(function (currencyData, index) {
-        var currencyDataDate = new Date(currencyData.timestamp);
-        if(currencyDataDate.getDate() == latestDate.getDate()) {
-            displayCurrencyYieldList.push(currencyData);
-        }
-      });
-    displayCurrencyYieldList.sort(function(a, b) {
-        return b.yield - a.yield;
-    });
-    this.setState({
-        displayCurrencyYieldList: displayCurrencyYieldList
+      currencyYields: currencyYields
     });
   }
 
   render() {
     const { classes } = this.props;
 
-    const displayCurrencyYields = this.state.displayCurrencyYieldList;
+    const displayCurrencyYields = this.state.currencyYields;
 
     return (
       <List className={classes.list}>

@@ -4,7 +4,10 @@ import { withStyles } from "@material-ui/core/styles";
 import Navigation from "./Navigation.js";
 import StakingYieldList from "./StakingYieldList.js";
 import DetailedYieldInfo from "./DetailedYieldInfo.js";
-import StakedFooter from "./StakedFooter.js"
+import StakedFooter from "./StakedFooter.js";
+import LinearProgress from '@material-ui/core/LinearProgress';
+import api from "../api.js";
+import api_key from "../api_key.js";
 
 const styles = theme => ({
   container: {
@@ -28,50 +31,62 @@ class Dashboard extends React.Component {
   }
 
   state = {
-    currencySelectedTimeSeries: null,
+    currencyYields: null,
+    currencySelected: null
   };
 
+  componentDidMount() {
+    api.get(`/yields?api_key=${api_key}&extended=true&by_key=false`)
+    .then(res => {
+      this.setState({
+        currencyYields: res.data,
+      });
+      console.log(res.data);
+    })
+    .catch(error => {
+      console.log(error);
+    });
+  }
+
   handleCurrencySelected = (currency, event) => {
-    const unfilteredCurrencyYieldList = this.props.currencyYieldList;
-    var currencySelectedTimeSeries = unfilteredCurrencyYieldList.filter(function(currency_snapshot) {
-      return currency_snapshot.currency == currency.currency;
-    });
-    currencySelectedTimeSeries.forEach(function (item, index) {
-      item.date = new Date(item.timestamp)
-    });
     this.setState({
-        currencySelectedTimeSeries: currencySelectedTimeSeries
+      currencySelected: currency,
     });
   };
 
   handleBackNav = () => {
     this.setState({
-        currencySelectedTimeSeries: null
+      currencySelected: null
     });
   };
 
   render() {
     const { classes } = this.props;
 
-    const currencyYieldList = this.props.currencyYieldList;
+    const currencyYields = this.state.currencyYields;
+    const currencySelected = this.state.currencySelected;
 
-    const currencySelectedTimeSeries = this.state.currencySelectedTimeSeries;
-
-    const showStakingYieldList= (currencySelectedTimeSeries == null)
+    const loadingCurrencyYields = (currencyYields == null && currencySelected == null);
+    const currencyIsSelected = (currencySelected != null);
 
     var body = null;
 
-    if(showStakingYieldList){
-        body = <StakingYieldList currencyYieldList={currencyYieldList} handleCurrencySelected={this.handleCurrencySelected}/>
+    if(loadingCurrencyYields){
+      body = <LinearProgress/>;
+      console.log('progress');
+    }else if(!currencyIsSelected){
+      body = <StakingYieldList currencyYields={currencyYields} handleCurrencySelected={this.handleCurrencySelected}/>;
+      console.log('list');
     }else{
-        body = <DetailedYieldInfo currencySelectedTimeSeries={currencySelectedTimeSeries} />
+      body = <DetailedYieldInfo currencySelected={currencySelected} />;
+      console.log('detail');
     }
 
     return (
         <div className={classes.container}>
           <Navigation 
-            isShowingYieldList={showStakingYieldList} 
-            currencySelectedTimeSeries={currencySelectedTimeSeries} 
+            isShowingYieldList={!currencyIsSelected} 
+            currencySelected={currencySelected} 
             handleBackNav={this.handleBackNav}
           />
           {body}

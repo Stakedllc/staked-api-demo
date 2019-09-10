@@ -5,7 +5,10 @@ import Typography from "@material-ui/core/Typography";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import Divider from '@material-ui/core/Divider';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import {Line} from 'react-chartjs-2';
+import api from "../api.js";
+import api_key from "../api_key.js";
 
 const styles = theme => ({
     greenYieldLabel: {
@@ -22,71 +25,103 @@ const styles = theme => ({
 
 class DetailedYieldInfo extends React.Component {
 
+  state = {
+    currencyTimeSeries: null
+  };
+
+  componentDidMount() {
+    const currencySelected = this.props.currencySelected;
+    api.get(`/yields/currency/${currencySelected.currency}/timeseries?api_key=${api_key}&interval=1&num_entries=30&extended=true`)
+    .then(res => {
+      this.setState({
+        currencyTimeSeries: res.data.timeseries,
+      });
+      console.log(res);
+    })
+    .catch(error => {
+      console.log(error);
+    });
+  }
+
   render() {
     const { classes } = this.props;
 
-    const currencySelectedTimeSeries = this.props.currencySelectedTimeSeries;
-    const currencySelected = currencySelectedTimeSeries[0];
+    const currencySelectedTimeSeries = this.state.currencyTimeSeries;
+    const loading = (currencySelectedTimeSeries == null);
 
-    const realYield = currencySelected.yield - currencySelected.inflation_total;
-    var realYieldLabelClassname = classes.greenYieldLabel;
-    if(realYield < 0){
-      realYieldLabelClassname = classes.redYieldLabel;
-    }
+    if(loading){
+      return(
+        <React.Fragment>
+          <LinearProgress/>
+        </React.Fragment>
+      );
+    }else{
 
-    const dates = currencySelectedTimeSeries.map(datum => datum.date.getMonth() + "/" + datum.date.getDate()).reverse();
-    const yields = currencySelectedTimeSeries.map(datum => Number(datum.yield) * 100);
-    const inflations = currencySelectedTimeSeries.map(datum => Number(datum.inflation_total) * 100);
+      const currencySelected = currencySelectedTimeSeries[0];
 
-    const lineChartData = {
-      labels: dates,
-      datasets: [
-        {
-          label: 'Yield',
-          fill: false,
-          lineTension: 0.1,
-          backgroundColor: 'rgba(76,175,80, 0.4)',
-          borderColor: 'rgba(76,175,80, 1)',
-          borderCapStyle: 'butt',
-          borderDash: [],
-          borderDashOffset: 0.0,
-          borderJoinStyle: 'miter',
-          pointBorderColor: 'rgba(76,175,80, 1)',
-          pointBackgroundColor: '#fff',
-          pointBorderWidth: 1,
-          pointHoverRadius: 5,
-          pointHoverBackgroundColor: 'rgba(76,175,80, 1)',
-          pointHoverBorderColor: 'rgba(220,220,220,1)',
-          pointHoverBorderWidth: 2,
-          pointRadius: 1,
-          pointHitRadius: 10,
-          data: yields
-        },
-        {
-          label: 'Inflation',
-          fill: false,
-          lineTension: 0.1,
-          backgroundColor: 'rgba(244,67,54, 0.4)',
-          borderColor: 'rgba(244,67,54, 1)',
-          borderCapStyle: 'butt',
-          borderDash: [],
-          borderDashOffset: 0.0,
-          borderJoinStyle: 'miter',
-          pointBorderColor: 'rgba(244,67,54, 1)',
-          pointBackgroundColor: '#fff',
-          pointBorderWidth: 1,
-          pointHoverRadius: 5,
-          pointHoverBackgroundColor: 'rgba(244,67,54, 1)',
-          pointHoverBorderColor: 'rgba(220,220,220,1)',
-          pointHoverBorderWidth: 2,
-          pointRadius: 1,
-          pointHitRadius: 10,
-          data: inflations
-        }
-      ]
-    };
+      const realYield = currencySelected.yield - currencySelected.inflation_total;
+      var realYieldLabelClassname = classes.greenYieldLabel;
+      if(realYield < 0){
+        realYieldLabelClassname = classes.redYieldLabel;
+      }
 
-    return (
+      currencySelectedTimeSeries.forEach(function (item, index) {
+        item.date = new Date(item.timestamp)
+      });
+
+      const dates = currencySelectedTimeSeries.map(datum => datum.date.getMonth() + "/" + datum.date.getDate()).reverse();
+      const yields = currencySelectedTimeSeries.map(datum => Number(datum.yield) * 100);
+      const inflations = currencySelectedTimeSeries.map(datum => Number(datum.inflation_total) * 100);
+
+      const lineChartData = {
+        labels: dates,
+        datasets: [
+          {
+            label: 'Yield',
+            fill: false,
+            lineTension: 0.1,
+            backgroundColor: 'rgba(76,175,80, 0.4)',
+            borderColor: 'rgba(76,175,80, 1)',
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: 'miter',
+            pointBorderColor: 'rgba(76,175,80, 1)',
+            pointBackgroundColor: '#fff',
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: 'rgba(76,175,80, 1)',
+            pointHoverBorderColor: 'rgba(220,220,220,1)',
+            pointHoverBorderWidth: 2,
+            pointRadius: 1,
+            pointHitRadius: 10,
+            data: yields
+          },
+          {
+            label: 'Inflation',
+            fill: false,
+            lineTension: 0.1,
+            backgroundColor: 'rgba(244,67,54, 0.4)',
+            borderColor: 'rgba(244,67,54, 1)',
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: 'miter',
+            pointBorderColor: 'rgba(244,67,54, 1)',
+            pointBackgroundColor: '#fff',
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: 'rgba(244,67,54, 1)',
+            pointHoverBorderColor: 'rgba(220,220,220,1)',
+            pointHoverBorderWidth: 2,
+            pointRadius: 1,
+            pointHitRadius: 10,
+            data: inflations
+          }
+        ]
+      };
+
+      return (
         <React.Fragment>
             <Line className={classes.lineChart} data={lineChartData} />
             <List className={classes.list}>
@@ -105,7 +140,8 @@ class DetailedYieldInfo extends React.Component {
             </ListItem>
             </List>
         </React.Fragment>
-    );
+      );
+    }
   }
 }
 

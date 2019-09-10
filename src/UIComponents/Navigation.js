@@ -38,7 +38,7 @@ class Navigation extends React.Component {
 
     }else{
 
-      const currencySelected = this.props.currencySelectedTimeSeries[0];
+      const currencySelected = this.props.currencySelected;
 
       return (
         <Breadcrumbs
