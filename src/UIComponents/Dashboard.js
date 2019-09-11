@@ -73,13 +73,10 @@ class Dashboard extends React.Component {
 
     if(loadingCurrencyYields){
       body = <LinearProgress/>;
-      console.log('progress');
     }else if(!currencyIsSelected){
       body = <StakingYieldList currencyYields={currencyYields} handleCurrencySelected={this.handleCurrencySelected}/>;
-      console.log('list');
     }else{
       body = <DetailedYieldInfo currencySelected={currencySelected} />;
-      console.log('detail');
     }
 
     return (
