@@ -69,9 +69,9 @@ class DetailedYieldInfo extends React.Component {
         item.date = new Date(item.timestamp)
       });
 
-      const dates = currencySelectedTimeSeries.map(datum => datum.date.getMonth() + "/" + datum.date.getDate()).reverse();
-      const yields = currencySelectedTimeSeries.map(datum => Number(datum.yield) * 100);
-      const inflations = currencySelectedTimeSeries.map(datum => Number(datum.inflation_total) * 100);
+      const dates = currencySelectedTimeSeries.map(datum => `${datum.date.getMonth() + 1}/${datum.date.getDate()}`).reverse();
+      const yields = currencySelectedTimeSeries.map(datum => Number(datum.yield) * 100).reverse();
+      const inflations = currencySelectedTimeSeries.map(datum => Number(datum.inflation_total) * 100).reverse();
 
       const lineChartData = {
         labels: dates,
