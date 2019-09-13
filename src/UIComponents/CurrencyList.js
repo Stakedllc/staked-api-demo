@@ -30,6 +30,10 @@ class CurrencyList extends React.Component {
     });
   }
 
+  numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
   render() {
     const { classes } = this.props;
 
@@ -41,27 +45,21 @@ class CurrencyList extends React.Component {
         {currenciesAdded.map((currency) => (
             <ListItem color="inherit" button onClick={(event) => this.props.handleCurrencySelected(currency, event)}>
               <Typography variant="h6" color="textPrimary">{currency.chain}</Typography>
-              <Typography variant="h6">{currency.balance + " " + currency.symbol + 's'}</Typography>
+              <Typography variant="h6" className={classes.listDetail}>{this.numberWithCommas(currency.account.balance) + " " + currency.symbol + 's'}</Typography>
             </ListItem>
           ))}
         {currenciesNotAdded.map((currency) => (
           <ListItem color="inherit" button onClick={(event) => this.props.handleCurrencyAddAccountDialogueOpen(currency, event)}>
             <Typography variant="h6" color="textPrimary">{currency.chain}</Typography>
             <Typography variant="h6" color="textPrimary" className={classes.listDetail}>
-                Add Account
-            </Typography>      
+              Add Account
+            </Typography>
           </ListItem>
         ))}
       </List>
     );
   }
 }
-
-/*
-<Button variant="outlined" color="primary">
-              Add Account
-            </Button>
-*/
 
 CurrencyList.propTypes = {
   classes: PropTypes.object.isRequired

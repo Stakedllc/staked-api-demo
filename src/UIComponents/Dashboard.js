@@ -5,6 +5,7 @@ import Navigation from "./Navigation.js";
 import CurrencyList from "./CurrencyList.js";
 import DetailedInfo from "./DetailedInfo.js";
 import StakedFooter from "./StakedFooter.js";
+import LinearProgress from '@material-ui/core/LinearProgress';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -65,7 +66,8 @@ class Dashboard extends React.Component {
     currencySelected: null,
     addingAccountOpen: false,
     addingAccountChain: null,
-    addingAccountAddress: null
+    addingAccountAddress: null,
+    addingAccountLoading: false
   };
 
   handleCurrencyAddAccountDialogueOpen = (currency, event) => {
@@ -85,6 +87,33 @@ class Dashboard extends React.Component {
 
   handleCurrencyAddAccountGetReporting = () => {
     console.log(this.state.addingAccountAddress);
+    const addingAccountChain = this.state.addingAccountChain;
+    const addingAccountAddress = this.state.addingAccountAddress;
+    var currencies = this.state.currencies;
+    this.setState({
+      addingAccountOpen: false,
+      addingAccountLoading: true
+    });
+    api.get(`/reports/${addingAccountChain}/delegator/${addingAccountAddress}/balance?api_key=${api_key}`)
+    .then(res => {
+      console.log(res);
+      currencies.map(function(currency){
+        if(currency.chain == addingAccountChain){
+          currency.account = {
+            'address': addingAccountAddress,
+            'balance': (res.data.balance/1000000).toFixed(2)
+          }
+        }
+      })
+      console.log(currencies);
+      this.setState({
+        currencies: currencies,
+        addingAccountLoading: false
+      });
+    })
+    .catch(error => {
+      console.log(error);
+    });
   };
 
   handleCurrencySelected = (currency, event) => {
@@ -107,10 +136,13 @@ class Dashboard extends React.Component {
     const currencyIsSelected = (currencySelected != null);
     const addingAccountOpen = this.state.addingAccountOpen;
     const addingAccountChain = this.state.addingAccountChain;
+    const addingAccountLoading = this.state.addingAccountLoading;
 
     var body = null;
 
-    if(!currencyIsSelected){
+    if(addingAccountLoading){
+      body = <LinearProgress/>;
+    }else if(!currencyIsSelected){
       body = <CurrencyList currencies={currencies} handleCurrencyAddAccountDialogueOpen={this.handleCurrencyAddAccountDialogueOpen} handleCurrencySelected={this.handleCurrencySelected}/>;
     }else{
       body = <DetailedInfo currencySelected={currencySelected} />;
