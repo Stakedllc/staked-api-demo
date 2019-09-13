@@ -5,6 +5,8 @@ import Typography from "@material-ui/core/Typography";
 import Link from "@material-ui/core/Link";
 import Breadcrumbs from "@material-ui/core/Breadcrumbs";
 import NavigateNextIcon from "@material-ui/icons/NavigateNext";
+import Avatar from '@material-ui/core/Avatar';
+import Logo from './images/logo.png';
 
 const styles = theme => ({
   backNavLink: {
@@ -30,8 +32,9 @@ class Navigation extends React.Component {
             separator={<NavigateNextIcon fontSize="medium" />}
             aria-label="breadcrumb"
         >
+            <Avatar alt="Logo" src={Logo}/>
             <Typography variant="h6" color="inherit">
-                Compound Your Crypto
+                Portfolio
             </Typography>
         </Breadcrumbs>
       );
@@ -46,8 +49,9 @@ class Navigation extends React.Component {
             aria-label="breadcrumb"
             className={classes.detailedBreadcrumb} 
         >
+            <Avatar alt="Logo" src={Logo}/>
             <Link className={classes.backNavLink} color="inherit" variant="h6" onClick={this.props.handleBackNav}>
-                Compound Your Crypto
+                Portfolio
             </Link>
             <Typography variant="h6" color="textPrimary">
                 {currencySelected.currency}

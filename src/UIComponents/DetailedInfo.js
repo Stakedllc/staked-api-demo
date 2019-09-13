@@ -23,7 +23,7 @@ const styles = theme => ({
     }
 });
 
-class DetailedYieldInfo extends React.Component {
+class DetailedInfo extends React.Component {
 
   state = {
     currencyTimeSeries: null
@@ -145,8 +145,8 @@ class DetailedYieldInfo extends React.Component {
   }
 }
 
-DetailedYieldInfo.propTypes = {
+DetailedInfo.propTypes = {
   classes: PropTypes.object.isRequired
 };
 
-export default withStyles(styles)(DetailedYieldInfo);
+export default withStyles(styles)(DetailedInfo);
