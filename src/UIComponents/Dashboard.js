@@ -1,18 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { withStyles } from "@material-ui/core/styles";
-import Navigation from "./Navigation.js";
-import CurrencyList from "./CurrencyList.js";
-import DetailedInfo from "./DetailedInfo.js";
-import StakedFooter from "./StakedFooter.js";
 import LinearProgress from '@material-ui/core/LinearProgress';
-import TextField from '@material-ui/core/TextField';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Button from '@material-ui/core/Button';
+import Navigation from "./Navigation.js";
+import AddAccount from "./AddAccount.js";
+import CurrencyList from "./CurrencyList.js";
+import TxnList from "./TxnList.js";
 import api from "../api.js";
 import api_key from "../api_key.js";
 
@@ -33,11 +26,11 @@ class Dashboard extends React.Component {
 
   constructor(props) {
     super(props);
-    this.handleCurrencySelected = this.handleCurrencySelected.bind(this);
-    this.handleCurrencyAddAccountDialogueOpen = this.handleCurrencyAddAccountDialogueOpen.bind(this);
-    this.handleCurrencyAddAccountDialogueClose = this.handleCurrencyAddAccountDialogueClose.bind(this);
-    this.handleCurrencyAddAccountGetReporting = this.handleCurrencyAddAccountGetReporting.bind(this);
-    this.handleBackNav = this.handleBackNav.bind(this);
+    this.addAccountOpen = this.addAccountOpen.bind(this);
+    this.addAccountClose = this.addAccountClose.bind(this);
+    this.getReporting = this.getReporting.bind(this);
+    this.getBalance = this.getBalance.bind(this);
+    this.getTxns = this.getTxns.bind(this);
   }
 
   state = {
@@ -63,124 +56,113 @@ class Dashboard extends React.Component {
         'account': null
       }
     ],
-    currencySelected: null,
-    addingAccountOpen: false,
-    addingAccountChain: null,
-    addingAccountAddress: null,
-    addingAccountLoading: false
+    addAccountOpen: false,
+    addAccountChain: null,
+    loading: false
   };
 
-  handleCurrencyAddAccountDialogueOpen = (currency, event) => {
+  addAccountOpen = (currency, event) => {
     this.setState({
-      addingAccountOpen: true,
-      addingAccountChain: currency.chain
+      addAccountOpen: true,
+      addAccountChain: currency.chain
     });
   };
 
-  handleCurrencyAddAccountDialogueClose = () => {
+  addAccountClose = () => {
     this.setState({
-      addingAccountOpen: false,
-      addingAccountChain: null,
-      addingAccountAddress: null,
+      addAccountOpen: false,
+      addAccountChain: null
     });
   };
 
-  handleCurrencyAddAccountGetReporting = () => {
-    console.log(this.state.addingAccountAddress);
-    const addingAccountChain = this.state.addingAccountChain;
-    const addingAccountAddress = this.state.addingAccountAddress;
-    var currencies = this.state.currencies;
+  getReporting = (chain, address) => {
+    this.addAccountClose();
     this.setState({
-      addingAccountOpen: false,
-      addingAccountLoading: true
-    });
-    api.get(`/reports/${addingAccountChain}/delegator/${addingAccountAddress}/balance?api_key=${api_key}`)
+      loading: true
+    })
+    this.getBalance(chain, address, (balance) => {
+      this.getTxns(chain, address, (txns) => {
+        var currencies = this.state.currencies;
+        currencies.map(function(currency){
+          if(currency.chain == chain){
+            currency.account = {
+              'address': address,
+              'balance': balance,
+              'txns': txns
+            }
+          }
+        })
+        this.setState({
+          currencies: currencies,
+          loading: false
+        })
+      })
+    })
+  };
+
+  getBalance(chain, address, callback){
+    api.get(`/reports/${chain}/delegator/${address}/balance?api_key=${api_key}`)
     .then(res => {
       console.log(res);
-      currencies.map(function(currency){
-        if(currency.chain == addingAccountChain){
-          currency.account = {
-            'address': addingAccountAddress,
-            'balance': (res.data.balance/1000000).toFixed(2)
-          }
-        }
-      })
-      console.log(currencies);
-      this.setState({
-        currencies: currencies,
-        addingAccountLoading: false
-      });
-    })
-    .catch(error => {
+      const balance = (res.data.balance/1000000).toFixed(2)
+      callback(balance);
+    }).catch(error => {
       console.log(error);
     });
-  };
+  }
 
-  handleCurrencySelected = (currency, event) => {
-    this.setState({
-      currencySelected: currency,
-    });
-  };
+  getTxns(chain, address, callback){
+    api.get(`/reports/${chain}/delegator/${address}/txns?api_key=${api_key}`)
+      .then(res => {
+        console.log(res);
+        var txns = res.data;
+        txns.forEach(txn => txn.date = new Date(txn.transaction_time));
+        txns.sort(function(a, b) {
+          return b.date.valueOf() - a.date.valueOf();
+        });
+        callback(txns);
+      })
+  }
 
-  handleBackNav = () => {
-    this.setState({
-      currencySelected: null
+  combineTxns() {
+    const currencies = this.state.currencies;
+    const currenciesWithAccounts = currencies.filter(currency => currency.account != null) || [];
+    const currenciesWithTxns = currenciesWithAccounts.filter(currency => currency.account.txns != null) || [];
+    const txns = currenciesWithTxns.map((currency) => currency.account.txns);
+    var fullTxnList = [].concat.apply([], txns);
+    fullTxnList.sort(function(a, b) {
+      return b.date.valueOf() - a.date.valueOf();
     });
-  };
+    return fullTxnList;
+  }
 
   render() {
     const { classes } = this.props;
 
     const currencies = this.state.currencies;
-    const currencySelected = this.state.currencySelected;
-    const currencyIsSelected = (currencySelected != null);
-    const addingAccountOpen = this.state.addingAccountOpen;
-    const addingAccountChain = this.state.addingAccountChain;
-    const addingAccountLoading = this.state.addingAccountLoading;
+    const txns = this.combineTxns();
+    const loading = this.state.loading;
+    const addAccountOpen = this.state.addAccountOpen;
+    const addAccountChain = this.state.addAccountChain;
 
     var body = null;
 
-    if(addingAccountLoading){
-      body = <LinearProgress/>;
-    }else if(!currencyIsSelected){
-      body = <CurrencyList currencies={currencies} handleCurrencyAddAccountDialogueOpen={this.handleCurrencyAddAccountDialogueOpen} handleCurrencySelected={this.handleCurrencySelected}/>;
+    if(loading){
+      body = <LinearProgress className={classes.loader}/>;
     }else{
-      body = <DetailedInfo currencySelected={currencySelected} />;
+      body = (
+        <React.Fragment>
+          <CurrencyList currencies={currencies} addAccountOpen={this.addAccountOpen}/>
+          <TxnList txns={txns}/>
+        </React.Fragment>
+      );
     }
 
     return (
         <div className={classes.container}>
-          <Navigation 
-            isShowingYieldList={!currencyIsSelected} 
-            currencySelected={currencySelected} 
-            handleBackNav={this.handleBackNav}
-          />
+          <Navigation />
+          <AddAccount open={addAccountOpen} chain={addAccountChain} getReporting={this.getReporting}/>
           {body}
-          <Dialog open={(addingAccountOpen)} onClose={this.handleCurrencyAddAccountDialogueClose} aria-labelledby="form-dialog-title">
-            <DialogTitle id="form-dialog-title">Add {addingAccountChain} Account</DialogTitle>
-            <DialogContent>
-              <DialogContentText>
-                To get reporting on your delegation to Staked, please input your {addingAccountChain} address
-              </DialogContentText>
-              <TextField
-                autoFocus
-                margin="dense"
-                id="name"
-                label="Your address"
-                onChange={(event) => this.setState({addingAccountAddress: event.target.value})}
-                fullWidth
-              />
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={this.handleCurrencyAddAccountDialogueClose} color="primary">
-                Cancel
-              </Button>
-              <Button onClick={this.handleCurrencyAddAccountGetReporting} color="primary">
-                Add Account
-              </Button>
-            </DialogActions>
-          </Dialog>
-          <StakedFooter />
         </div>
     );
   }
