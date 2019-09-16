@@ -17,7 +17,7 @@ const chain = 'CHAIN NAME';
 const address = 'DELEGATOR ADDRESS';
 
 var api = axios.create({
-  baseURL: "http://testnet.staked.cloud/api",
+  baseURL: "https://testnet.staked.cloud/api",
   timeout: 1000000
 });
 
@@ -36,7 +36,7 @@ const chain = 'CHAIN NAME';
 const address = 'DELEGATOR ADDRESS';
 
 var request = {
-  "url": `http://testnet.staked.cloud/api/reports/${chain}/delegator/${address}/balance?api_key=${api_key}`,
+  "url": `https://testnet.staked.cloud/api/reports/${chain}/delegator/${address}/balance?api_key=${api_key}`,
   "method": "GET",
   "timeout": 0,
 };
@@ -57,7 +57,7 @@ const chain = 'CHAIN NAME';
 const address = 'DELEGATOR ADDRESS';
 
 var api = axios.create({
-  baseURL: "http://testnet.staked.cloud/api",
+  baseURL: "https://testnet.staked.cloud/api",
   timeout: 1000000
 });
 
@@ -76,7 +76,7 @@ const chain = 'CHAIN NAME';
 const address = 'DELEGATOR ADDRESS';
 
 var request = {
-  "url": `http://testnet.staked.cloud/api/reports/${chain}/delegator/${address}/txns?api_key=${api_key}`,
+  "url": `https://testnet.staked.cloud/api/reports/${chain}/delegator/${address}/txns?api_key=${api_key}`,
   "method": "GET",
   "timeout": 0,
 };
