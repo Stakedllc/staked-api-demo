@@ -1,35 +1,9 @@
-# StakedAPIDemo
+# Staked API Demos
 
-This demo showcases yield information for a number of cryptocurrencies supported by Staked. 
+This repo contains demos showcasing the Staked API. All demos are written as React web apps.
 
-#### You can hit the /yields endpoint in your web app:
-
-React with Axios
-```javacript
-import axios from "axios";
-
-var api = axios.create({
-  baseURL: "http://testnet.staked.cloud/api",
-  timeout: 1000000
-});
-
-api.defaults.headers.post["Content-Type"] = "application/json";
-
-api.get(`/yields?api_key=${api_key}&extended=true&by_key=false`).then(response => {
-  console.log(res);
-})
-```
+You can download all demos by cloning this repo, or download a specific one by going to its branch.
 
 
-jQuery
-```jquery
-var settings = {
-  "url": "http://testnet.staked.cloud/api/yields?api_key={api_key}&extended=true&by_key=false",
-  "method": "GET",
-  "timeout": 0,
-};
 
-$.ajax(settings).done(function (response) {
-  console.log(response);
-});
-```
+To learn more about the Staked API, check out our documentation: https://app.gitbook.com/@staked/s/staked/
