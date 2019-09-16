@@ -2,6 +2,8 @@
 
 This repo showcases how to use reporting api for a number of cryptocurrencies supported by Staked. 
 
+You can view the live demo here: https://staked-api-reporting-demo.appspot.com/
+
 For more information, check out our documentation: https://staked.gitbook.io/staked/services/reporting-api
 
 #### You can hit the /reports endpoint in your web app
