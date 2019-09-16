@@ -143,7 +143,7 @@ class TxnList extends React.Component {
                   primary={
                     this.getCurrencySymbolLabel(txn)
                   }
-                  secondary={this.getTransactionLabel(txn) + ", " + txn.date.getMonth() + "/" + txn.date.getDate()}
+                  secondary={`${this.getTransactionLabel(txn)}, ${txn.date.getMonth()+1}/${txn.date.getDate()}`}
             />
             <Typography color={this.getTransactionColor(txn)} className={classes.listDetail}>{this.getTransactionAmount(txn)}</Typography>
           </ListItem>
