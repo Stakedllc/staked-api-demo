@@ -4,6 +4,7 @@ import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
+import ListItemText from '@material-ui/core/ListItemText';
 
 const styles = theme => ({
   listDetail: {
@@ -42,7 +43,17 @@ class TxnList extends React.Component {
 
   getTransactionColor(txn){
     switch(txn.kind){
-      case "STK", "PYBL", "PEND", "CLSED", "SCH": 
+      case "STK": 
+        return "green";
+      case "PYBL":
+        return "green";
+      case "PEND":
+        return "Green";
+      case "CLSD":
+        return "green";
+      case "CLSED":
+        return "green";
+      case "SCH":
         return "green";
       case "UNSTK":
           return "red"; 
@@ -62,8 +73,14 @@ class TxnList extends React.Component {
           return this.numberWithCommas((txn.reward / 1000000).toFixed(2));
       case "CLSD":
           return this.numberWithCommas((txn.reward / 1000000).toFixed(2));
+      case "CLSED":
+          return this.numberWithCommas((txn.total / 1000000).toFixed(2));
       case "PEND":
-        return this.numberWithCommas((txn.reward / 1000000).toFixed(2));
+        if(txn.reward == null){
+          return this.numberWithCommas((txn.total / 1000000).toFixed(2));
+        }else{
+          return this.numberWithCommas((txn.reward / 1000000).toFixed(2));
+        }
       default: 
         console.log("Should be a future payment");
         console.log(txn);
@@ -75,14 +92,38 @@ class TxnList extends React.Component {
     switch(txn.kind){
       case "STK": 
         return "Staked";
-      case "PYBL", "PEND", "CLSED":
-          return "Reward";
+      case "SCH": 
+        return "Scheduled Reward";
+      case "PYBL":
+        return "Reward";
+      case "PEND":
+        return "Pending Reward";
+      case "CLSD":
+        return "Reward";
+      case "CLSED":
+        return "Reward";
       case "UNSTK":
           return "Unstake"
       default: 
         console.log("Should be a future payment");
         console.log(txn);
         return txn.kind;
+    }
+  }
+
+  getCurrencySymbolLabel(txn){
+    switch(txn.chain){
+      case "Cosmos": 
+        return "ATOM";
+      case "Dash":
+        return "DASH";
+      case "Terra":
+        return "LUNA";
+      case "Tezos":
+        return "XTZ";
+      default: 
+        console.log("unexpected behavior");
+        return "";
     }
   }
 
@@ -94,11 +135,16 @@ class TxnList extends React.Component {
     return (
       <List className={classes.list}>
         <ListItem color="inherit" className={txns.length != 0 ? classes.listItemSubheader : classes.listItemSubheaderNoBottomPadding}>
-          <Typography variant="subtitle2" className={classes.avatar} color="textSecondary">{`${txns.length || 0} Transactions`}</Typography>
+          <Typography variant="subtitle2" className={classes.avatar} color="textSecondary">{`Recent Transactions`}</Typography>
         </ListItem>
-      {txns.map((txn) => (
+      {txns.slice(0, 10).map((txn) => (
           <ListItem color="inherit">
-            <Typography color="textPrimary">{this.getTransactionLabel(txn)}</Typography>
+            <ListItemText
+                  primary={
+                    this.getCurrencySymbolLabel(txn)
+                  }
+                  secondary={this.getTransactionLabel(txn) + ", " + txn.date.getMonth() + "/" + txn.date.getDate()}
+            />
             <Typography color={this.getTransactionColor(txn)} className={classes.listDetail}>{this.getTransactionAmount(txn)}</Typography>
           </ListItem>
       ))}

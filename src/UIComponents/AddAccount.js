@@ -29,7 +29,7 @@ class AddAccount extends React.Component {
         this.setState({
             address: null
         })
-        this.props.addAccountClose();
+        this.props.close();
     };
 
     handleDialogueSubmit = () => {

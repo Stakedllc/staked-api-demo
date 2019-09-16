@@ -4,7 +4,8 @@ import { withStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import Avatar from '@material-ui/core/Avatar';
+import ListItemText from '@material-ui/core/ListItemText';
+import Button from '@material-ui/core/Button';
 import Cosmos from './images/Cosmos.png';
 import Tezos from './images/Tezos.png';
 import Dash from './images/Dash.png';
@@ -16,17 +17,14 @@ const styles = theme => ({
   },
   avatar: {
     position: "absolute",
-    left: "0px"
+    left: "0px",
   },
   subheader: {
     position: "relative"
   },
   listText: {
     position: "relative",
-    marginLeft: "40px"
-  },
-  listItem: {
-    padding: "10px"
+    marginLeft: "0px"
   },
   listItemSubheader: {
     paddingTop: "10px",
@@ -83,25 +81,37 @@ class CurrencyList extends React.Component {
     return (
       <List className={classes.list}>
         <ListItem color="inherit" className={classes.listItemSubheader}>
-          <Typography variant="subtitle2" className={classes.avatar} color="textSecondary">Currencies</Typography>
+          <Typography variant="subtitle2" className={classes.avatar} color="textSecondary">Chains</Typography>
         </ListItem>
         {currenciesAdded.map((currency) => (
             <React.Fragment>
-              <ListItem color="inherit" className={classes.listItem}>
-                <Avatar alt="Logo" className={classes.avatar} src={this.getImageFromChain(currency.chain)}/>
-                <Typography variant="h6" color="textPrimary" className={classes.listText}>{currency.chain}</Typography>
-                <Typography variant="h6" className={classes.listDetail}>{this.numberWithCommas(currency.account.balance) + " " + currency.symbol + 's'}</Typography>
+              <ListItem color="inherit">
+                <ListItemText
+                  primary={
+                    <React.Fragment>
+                      <Typography variant="h6" color="textPrimary" className={classes.listText}>{currency.chain}</Typography>
+                    </React.Fragment>
+                  }
+                  secondary={currency.symbol + "s"}
+                />
+                <Typography variant="h6" className={classes.listDetail}>{this.numberWithCommas(currency.account.balance)}</Typography>
               </ListItem>
             </React.Fragment>
           ))}
         {currenciesNotAdded.map((currency) => (
           <React.Fragment>
-            <ListItem color="inherit" className={classes.listItem} button onClick={(event) => this.props.addAccountOpen(currency, event)}>
-              <Avatar alt="Logo" className={classes.avatar} src={this.getImageFromChain(currency.chain)}/>
-              <Typography variant="h6" color="textPrimary" className={classes.listText}>{currency.chain}</Typography>
-              <Typography variant="h6" color="textPrimary" className={classes.listDetail}>
+            <ListItem color="inherit">
+              <ListItemText
+                primary={
+                  <React.Fragment>
+                    <Typography variant="h6" color="textPrimary" className={classes.listText}>{currency.chain}</Typography>
+                  </React.Fragment>
+                }
+                secondary={currency.symbol + "s"}
+              />
+              <Button color="primary" className={classes.listDetail} onClick={(event) => this.props.addAccountOpen(currency, event)}>
                 Add Account
-              </Typography>
+              </Button>
             </ListItem>
           </React.Fragment>
         ))}

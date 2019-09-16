@@ -117,6 +117,7 @@ class Dashboard extends React.Component {
         console.log(res);
         var txns = res.data;
         txns.forEach(txn => txn.date = new Date(txn.transaction_time));
+        txns.forEach(txn => txn.chain = chain);
         txns.sort(function(a, b) {
           return b.date.valueOf() - a.date.valueOf();
         });
@@ -161,7 +162,7 @@ class Dashboard extends React.Component {
     return (
         <div className={classes.container}>
           <Navigation />
-          <AddAccount open={addAccountOpen} chain={addAccountChain} getReporting={this.getReporting}/>
+          <AddAccount open={addAccountOpen} close={this.addAccountClose} chain={addAccountChain} getReporting={this.getReporting}/>
           {body}
         </div>
     );
