@@ -4,7 +4,7 @@ This repo showcases how to use reporting api for a number of cryptocurrencies su
 
 For more information, check out our documentation: https://staked.gitbook.io/staked/services/reporting-api
 
-#### You can hit the /reports endpoint in your web app:
+#### You can hit the /reports endpoint in your web app
 
 To recieve the balance of an address that has staked with us:
 
