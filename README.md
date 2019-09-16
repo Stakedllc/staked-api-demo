@@ -2,7 +2,9 @@
 
 This demo showcases yield information for a number of cryptocurrencies supported by Staked. 
 
-for more information, check out our docs: https://staked.gitbook.io/staked/services/yields-api
+The can view the live demo here: http://staked-api-demo.appspot.com/
+
+For more information, check out our docs: https://staked.gitbook.io/staked/services/yields-api
 
 #### You can hit the /yields endpoint in your web app
 
