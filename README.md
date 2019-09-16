@@ -1,8 +1,12 @@
-# StakedAPIDemo
+# Yields API Demo
 
 This demo showcases yield information for a number of cryptocurrencies supported by Staked. 
 
-#### You can hit the /yields endpoint in your web app:
+for more information, check out our docs: https://staked.gitbook.io/staked/services/yields-api
+
+#### You can hit the /yields endpoint in your web app
+
+To get yield information:
 
 React with Axios
 ```javacript
