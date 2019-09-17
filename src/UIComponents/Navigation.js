@@ -32,7 +32,7 @@ class Navigation extends React.Component {
     return (
       <React.Fragment>
         <Avatar alt="Logo" src={Logo} className={classes.centered}/>
-        <Typography variant="h6" color="textPrimary" className={classes.title}>Reporting Demo</Typography>
+        <Typography variant="h6" color="textPrimary" className={classes.title}>Staked API Demo</Typography>
       </React.Fragment>
     );
   }

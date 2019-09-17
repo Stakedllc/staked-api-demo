@@ -134,9 +134,11 @@ class TxnList extends React.Component {
 
     return (
       <List className={classes.list}>
-        <ListItem color="inherit" className={txns.length != 0 ? classes.listItemSubheader : classes.listItemSubheaderNoBottomPadding}>
-          <Typography variant="subtitle2" className={classes.avatar} color="textSecondary">{`Recent Transactions`}</Typography>
-        </ListItem>
+        {txns.slice(0, 1).map((txn) => (
+          <ListItem color="inherit" className={txns.length != 0 ? classes.listItemSubheader : classes.listItemSubheaderNoBottomPadding}>
+            <Typography variant="subtitle2" className={classes.avatar} color="textSecondary">{`Recent Transactions`}</Typography>
+          </ListItem>
+      ))}
       {txns.slice(0, 10).map((txn) => (
           <ListItem color="inherit">
             <ListItemText

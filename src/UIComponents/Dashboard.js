@@ -14,7 +14,7 @@ const styles = theme => ({
     display: "flex",
     flexDirection: "column",
     width: 400,
-    marginTop: theme.spacing.unit * 20,
+    marginTop: theme.spacing.unit * 15,
     padding: theme.spacing.unit * 3,
     margin: "auto",
     borderRadius: 5,
@@ -38,28 +38,33 @@ class Dashboard extends React.Component {
       {
         'chain': 'Cosmos',
         'symbol': 'ATOM',
-        'account': null
+        'account': null,
+        'yield_info': null
       },
       {
         'chain': 'Tezos',
         'symbol': 'XTZ',
-        'account': null
+        'account': null,
+        'yield_info': null
       },
       {
         'chain': 'Dash',
         'symbol': 'DASH',
-        'account': null
-      },
-      {
-        'chain': 'Terra',
-        'symbol': 'LUNA',
-        'account': null
+        'account': null,
+        'yield_info': null
       }
     ],
     addAccountOpen: false,
     addAccountChain: null,
     loading: false
   };
+
+  componentDidMount() {
+    this.setState({
+      loading: true
+    });
+    this.getYields();
+  }
 
   addAccountOpen = (currency, event) => {
     this.setState({
@@ -74,6 +79,28 @@ class Dashboard extends React.Component {
       addAccountChain: null
     });
   };
+
+  getYields = () => {
+    var currencies = this.state.currencies;
+    api.get(`/yields?api_key=${api_key}&extended=true&by_key=false`).then(res => {
+      console.log(res.data);
+      res.data.forEach((yield_info) => {
+        currencies.map((supported) => {
+          if(supported.chain == yield_info.currency){
+            supported.yield_info = yield_info;
+            console.log('here');
+          }
+          console.log(supported.chain);
+          console.log(yield_info);
+        })
+      })
+      console.log(currencies);
+      this.setState({
+        loading: false,
+        currencies: currencies
+      });
+    })
+  }
 
   getReporting = (chain, address) => {
     this.addAccountClose();
@@ -154,7 +181,6 @@ class Dashboard extends React.Component {
       body = (
         <React.Fragment>
           <CurrencyList currencies={currencies} addAccountOpen={this.addAccountOpen}/>
-          <TxnList txns={txns}/>
         </React.Fragment>
       );
     }
