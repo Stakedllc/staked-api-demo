@@ -208,7 +208,7 @@ class CurrencyList extends React.Component {
         <div className={classes.container}>
           {currenciesAdded.map((currency) => (
               <React.Fragment>
-                <ListItem color="inherit" button onClick={(event) => console.log(event)}>
+                <ListItem color="inherit">
                   <ListItemText
                     primary={
                       <React.Fragment className={classes.listText}>
@@ -232,7 +232,7 @@ class CurrencyList extends React.Component {
             ))}
           {currenciesNotAdded.map((currency) => (
             <React.Fragment>
-              <ListItem color="inherit" button onClick={(event) => console.log(event)}>
+              <ListItem color="inherit">
                 <ListItemText
                   primary={
                     <React.Fragment>
@@ -249,7 +249,7 @@ class CurrencyList extends React.Component {
           ))}
           {notReportingCurrencies.map((currency) => (
               <React.Fragment>
-                <ListItem color="inherit" button onClick={(event) => console.log(event)}>
+                <ListItem color="inherit">
                   <ListItemText
                     primary={
                       <React.Fragment className={classes.listText}>

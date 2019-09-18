@@ -5,6 +5,7 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import Navigation from "./Navigation.js";
 import AddAccount from "./AddAccount.js";
 import CurrencyList from "./CurrencyList.js";
+import RewardsList from "./RewardsList.js"
 import YieldTimeseriesChart from "./YieldTimeseriesChart";
 import Typography from "@material-ui/core/Typography";
 import List from "@material-ui/core/List";
@@ -241,12 +242,14 @@ class Dashboard extends React.Component {
     const { classes } = this.props;
 
     const currencies = this.state.currencies;
-    const txns = this.combineTxns();
+    const reportingCurrencies = currencies.filter((currency) => (typeof currency.account !== "undefined"))
+    const currenciesAdded = reportingCurrencies.filter((currency) => currency.account != null) || []
     const loading = this.state.loading;
     const addAccountOpen = this.state.addAccountOpen;
     const addAccountChain = this.state.addAccountChain;
 
     var body = null;
+    var rewards = (currenciesAdded.length > 0) ? <RewardsList currencies={currencies}/> : null
 
     if(loading){
       body = <LinearProgress className={classes.loader}/>;
@@ -254,6 +257,7 @@ class Dashboard extends React.Component {
       body = (
         <React.Fragment>
           <CurrencyList currencies={currencies} addAccountOpen={this.addAccountOpen}/>
+          {rewards}
           <List className={classes.list}>
             <ListItem color="inherit" className={classes.listItemSubheader}>
               <Typography variant="subtitle2" className={classes.avatar} color="textSecondary">Historical Yields</Typography>
