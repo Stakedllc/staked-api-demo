@@ -16,12 +16,22 @@ const styles = theme => ({
   container: {
     display: "flex",
     flexDirection: "column",
-    width: 400,
-    marginTop: theme.spacing.unit * 5,
-    padding: theme.spacing.unit * 3,
+    marginTop: theme.spacing.unit * 2,
+    padding: theme.spacing.unit * 2,
     margin: "auto",
+    width: 700,
     borderRadius: 5,
     boxShadow: "0 3px 5px 2px rgba(0, 0, 0, .1)"
+  },
+  currencyListContainer: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'space-around',
+    overflow: 'hidden'
+  },
+  currencyListItems: {
+    width: 500,
+    height: 450,
   },
   listDetail: {
     position: "absolute",

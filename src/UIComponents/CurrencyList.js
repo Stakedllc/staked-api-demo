@@ -8,6 +8,17 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Button from '@material-ui/core/Button';
 
 const styles = theme => ({
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    flexWrap: "wrap",
+    height: 240,
+    width: 350,
+    position: "relative",
+    marginLeft: "0px",
+    marginRight: "0px",
+    marginBottom: "0px"
+  },
   listDetail: {
     position: "absolute",
     right: "10px"
@@ -35,7 +46,6 @@ const styles = theme => ({
     position: "absolute",
     right: "0px"
   }
-
 });
 
 class CurrencyList extends React.Component {
@@ -195,64 +205,66 @@ class CurrencyList extends React.Component {
         <ListItem color="inherit" className={classes.listItemSubheader}>
           <Typography variant="subtitle2" className={classes.avatar} color="textSecondary">Opportunities</Typography>
         </ListItem>
-        {currenciesAdded.map((currency) => (
-            <React.Fragment>
-              <ListItem color="inherit" button onClick={(event) => console.log(event)}>
-                <ListItemText
-                  primary={
-                    <React.Fragment className={classes.listText}>
-                      <Typography variant="h6" color="textPrimary" className={classes.listText}>{currency.chain}</Typography>
-                    </React.Fragment>
-                  }
-                  secondary={`${currency.symbol}, Earning ` + this.getYieldString(currency)}
-                />
-                <div className={classes.listDetail}>
+        <div className={classes.container}>
+          {currenciesAdded.map((currency) => (
+              <React.Fragment>
+                <ListItem color="inherit" button onClick={(event) => console.log(event)}>
                   <ListItemText
                     primary={
-                      <React.Fragment>
-                        <Typography variant="h6" align={'right'} className={classes.listLabel}>{this.numberWithCommas(currency.account.balance)}</Typography>
+                      <React.Fragment className={classes.listText}>
+                        <Typography variant="h6" color="textPrimary" className={classes.listText}>{currency.chain}</Typography>
                       </React.Fragment>
                     }
-                    secondary={"Account Balance"}
+                    secondary={`${currency.symbol}, Earning ` + this.getYieldString(currency)}
                   />
-                </div>
-              </ListItem>
-            </React.Fragment>
-          ))}
-        {currenciesNotAdded.map((currency) => (
-          <React.Fragment>
-            <ListItem color="inherit" button onClick={(event) => console.log(event)}>
-              <ListItemText
-                primary={
-                  <React.Fragment>
-                    <Typography variant="h6" color="textPrimary" className={classes.listText}>{currency.chain}</Typography>
-                  </React.Fragment>
-                }
-                secondary={`${currency.symbol}, Yield ` + this.getYieldString(currency)}
-              />
-              <Button color="primary" className={classes.button} onClick={(event) => this.props.addAccountOpen(currency, event)}>
-                Add Account
-              </Button>
-            </ListItem>
-          </React.Fragment>
-        ))}
-        {notReportingCurrencies.map((currency) => (
+                  <div className={classes.listDetail}>
+                    <ListItemText
+                      primary={
+                        <React.Fragment>
+                          <Typography variant="h6" align={'right'} className={classes.listLabel}>{this.numberWithCommas(currency.account.balance)}</Typography>
+                        </React.Fragment>
+                      }
+                      secondary={"Account Balance"}
+                    />
+                  </div>
+                </ListItem>
+              </React.Fragment>
+            ))}
+          {currenciesNotAdded.map((currency) => (
             <React.Fragment>
               <ListItem color="inherit" button onClick={(event) => console.log(event)}>
                 <ListItemText
                   primary={
-                    <React.Fragment className={classes.listText}>
+                    <React.Fragment>
                       <Typography variant="h6" color="textPrimary" className={classes.listText}>{currency.chain}</Typography>
                     </React.Fragment>
                   }
                   secondary={`${currency.symbol}, Yield ` + this.getYieldString(currency)}
                 />
-                <Button color="primary" disabled className={classes.button}>
-                  Unavailable
+                <Button color="primary" className={classes.button} onClick={(event) => this.props.addAccountOpen(currency, event)}>
+                  Add Account
                 </Button>
               </ListItem>
             </React.Fragment>
           ))}
+          {notReportingCurrencies.map((currency) => (
+              <React.Fragment>
+                <ListItem color="inherit" button onClick={(event) => console.log(event)}>
+                  <ListItemText
+                    primary={
+                      <React.Fragment className={classes.listText}>
+                        <Typography variant="h6" color="textPrimary" className={classes.listText}>{currency.chain}</Typography>
+                      </React.Fragment>
+                    }
+                    secondary={`${currency.symbol}, Yield ` + this.getYieldString(currency)}
+                  />
+                  <Button color="primary" disabled className={classes.button}>
+                    Unavailable
+                  </Button>
+                </ListItem>
+              </React.Fragment>
+            ))}
+        </div>
       </List>
     );
   }
