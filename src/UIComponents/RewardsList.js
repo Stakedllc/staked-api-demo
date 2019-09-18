@@ -75,7 +75,7 @@ class RewardsList extends React.Component {
             })
           }
         }
-        return beginBalance.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        return beginBalance;
       case "Tezos":
           var beginBalance = 0;
           if(currency.account != null){
@@ -88,7 +88,7 @@ class RewardsList extends React.Component {
               })
             }
           }
-          return beginBalance.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+          return beginBalance;
       case "Dash":
         var beginBalance = 0;
         if(currency.account != null){
@@ -101,7 +101,7 @@ class RewardsList extends React.Component {
             })
             }
         }
-        return beginBalance.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        return beginBalance;
       case "Terra":
           var beginBalance = 0;
           if(currency.account != null){
@@ -114,7 +114,7 @@ class RewardsList extends React.Component {
               })
             }
           }
-          return beginBalance.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+          return beginBalance;
       default:
         return 0;
     }
@@ -127,14 +127,15 @@ class RewardsList extends React.Component {
           if(currency.account != null){
             if(currency.account.txns != null){
               const txns = currency.account.txns;
-              for(var txn in txns){
+              txns.forEach((txn) => {
                 if(txn.kind == "CLSED"){
-                  totalRewards = totalRewards + (txn.reward/1000000);
+                    console.log(txn.reward);
+                    totalRewards = totalRewards + (txn.reward/10000000);
                 }
-              }
+              })
             }
           }
-          return totalRewards.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+          return totalRewards;
       case "Tezos":
           var totalRewards = 0;
           var staked = 0;
@@ -150,36 +151,40 @@ class RewardsList extends React.Component {
               })
             }
           }
-          return totalRewards.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+          return totalRewards;
       case "Dash":
           var totalRewards = 0;
           if(currency.account != null){
             if(currency.account.txns != null){
               const txns = currency.account.txns;
-              for(var txn in txns){
+              txns.forEach((txn) => {
                 if(txn.kind == "PAID"){
-                  totalRewards = totalRewards + (txn.reward/1000000);
+                    totalRewards = totalRewards + (txn.reward/1000000);
                 }
-              }
+              })
             }
           }
-          return totalRewards.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+          return totalRewards;
       case "Terra":
           var totalRewards = 0;
           if(currency.account != null){
             if(currency.account.txns != null){
               const txns = currency.account.txns;
-              for(var txn in txns){
+              txns.forEach((txn) => {
                 if(txn.kind == "CLSED"){
-                  totalRewards = totalRewards + (txn.total/1000000);
+                    totalRewards = totalRewards + (txn.total/1000000);
                 }
-              }
+              })
             }
           }
-          return totalRewards.toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+          return totalRewards;
       default:
         break;
     }
+  }
+
+  getRealized(currency) {
+    return((this.getTotalRewards(currency)/this.getBeginningBalance(currency)) * 100);
   }
 
   render() {
@@ -210,13 +215,13 @@ class RewardsList extends React.Component {
                     <Typography variant="h6" color="textPrimary" className={classes.listText}>{currency.chain}</Typography>
                     </React.Fragment>
                 }
-                secondary={`Staked ` + this.getBeginningBalance(currency)}
+                secondary={`Staked ${(this.getBeginningBalance(currency)).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}, Realized Return in ${currency.symbol}: ` + (this.getRealized(currency)).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + '%'}
                 />
                 <div className={classes.listDetail}>
                 <ListItemText
                     primary={
                     <React.Fragment>
-                        <Typography variant="h6" align={'right'} className={classes.listLabel}>{this.getTotalRewards(currency)}</Typography>
+                        <Typography variant="h6" align={'right'} className={classes.listLabel}>{(this.getTotalRewards(currency)).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Typography>
                     </React.Fragment>
                     }
                     secondary={`${currency.symbol} Earned`}

@@ -79,112 +79,6 @@ class CurrencyList extends React.Component {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 
-  getBeginningBalance(currency){
-    switch(currency.chain){
-      case "Cosmos":
-        var beginBalance = 0;
-        if(currency.account != null){
-          if(currency.account.txns != null){
-            const txns = currency.account.txns;
-            for(var txn in txns){
-              if(txn.kind == "STK"){
-                beginBalance = beginBalance + (txn.amount/1000000);
-              }
-            }
-          }
-        }
-        return beginBalance;
-      case "Tezos":
-          var beginBalance = 0;
-          if(currency.account != null){
-            if(currency.account.txns != null){
-              const txns = currency.account.txns;
-              for(var txn in txns){
-                if(txn.kind == "STK"){
-                  beginBalance = beginBalance + (txn.amount/1000000);
-                }
-              }
-            }
-          }
-          return beginBalance;
-      case "Dash":
-        return 1000;
-      case "Terra":
-          var beginBalance = 0;
-          if(currency.account != null){
-            if(currency.account.txns != null){
-              const txns = currency.account.txns;
-              for(var txn in txns){
-                if(txn.kind == "STK"){
-                  beginBalance = beginBalance + (txn.amount/1000000);
-                }
-              }
-            }
-          }
-          return beginBalance;
-      default:
-        return 0;
-    }
-  }
-
-  getTotalRewards(currency){
-    switch(currency.chain){
-      case "Cosmos":
-          var totalRewards = 0;
-          if(currency.account != null){
-            if(currency.account.txns != null){
-              const txns = currency.account.txns;
-              for(var txn in txns){
-                if(txn.kind == "CLSED"){
-                  totalRewards = totalRewards + (txn.reward/1000000);
-                }
-              }
-            }
-          }
-          return totalRewards;
-      case "Tezos":
-          var totalRewards = 0;
-          if(currency.account != null){
-            if(currency.account.txns != null){
-              const txns = currency.account.txns;
-              for(var txn in txns){
-                if(txn.kind == "PYBL"){
-                  totalRewards = totalRewards + (txn.reward/1000000);
-                }
-              }
-            }
-          }
-          return totalRewards;
-      case "Dash":
-          var totalRewards = 0;
-          if(currency.account != null){
-            if(currency.account.txns != null){
-              const txns = currency.account.txns;
-              for(var txn in txns){
-                if(txn.kind == "PAID"){
-                  totalRewards = totalRewards + (txn.reward/1000000);
-                }
-              }
-            }
-          }
-          return totalRewards;
-      case "Terra":
-          var totalRewards = 0;
-          if(currency.account != null){
-            if(currency.account.txns != null){
-              const txns = currency.account.txns;
-              for(var txn in txns){
-                if(txn.kind == "CLSED"){
-                  totalRewards = totalRewards + (txn.total/1000000);
-                }
-              }
-            }
-          }
-      default:
-        break;
-    }
-  }
-
   getYieldString(currency) {
     if(typeof currency.yield_info === "undefined"){
       return `Unavailable`;
@@ -224,7 +118,7 @@ class CurrencyList extends React.Component {
                           <Typography variant="h6" align={'right'} className={classes.listLabel}>{this.numberWithCommas(currency.account.balance)}</Typography>
                         </React.Fragment>
                       }
-                      secondary={"Account Balance"}
+                      secondary={"Delegation Balance"}
                     />
                   </div>
                 </ListItem>
