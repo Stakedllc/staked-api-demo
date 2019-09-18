@@ -19,6 +19,10 @@ class YieldTimeseriesChart extends React.Component {
     var dates = [];
     var datasets = [];
 
+    currencies = currencies.filter((currency) => {
+        return (typeof currency.yield_info !== "undefined");
+    })
+
     if(currencies[0].yield_info != null){
 
         for (var i = 0; i < currencies.length; i++) {
@@ -38,7 +42,7 @@ class YieldTimeseriesChart extends React.Component {
         console.log(counts);
 
         dates = dates.filter((date) => {
-            return(counts[`${date.getMonth()+1}/${date.getDate()}`] == 3)
+            return(counts[`${date.getMonth()+1}/${date.getDate()}`] == currencies.length)
         })
 
         dates = dates.sort((a, b) => {

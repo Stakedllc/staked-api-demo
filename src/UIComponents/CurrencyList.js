@@ -6,9 +6,6 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from '@material-ui/core/ListItemText';
 import Button from '@material-ui/core/Button';
-import Cosmos from './images/Cosmos.png';
-import Tezos from './images/Tezos.png';
-import Dash from './images/Dash.png';
 
 const styles = theme => ({
   listDetail: {
@@ -46,39 +43,30 @@ class CurrencyList extends React.Component {
   constructor(props) {
     super(props);
     this.numberWithCommas = this.numberWithCommas.bind(this);
-    this.getImageFromChain = this.getImageFromChain.bind(this);
   }
 
   state = {
     currenciesAdded: null,
-    currenciesNotAdded: null
+    currenciesNotAdded: null,
+    notReportingCurrencies: null
   };
 
   componentDidMount() {
     const currencies = this.props.currencies;
-    const currenciesAdded = currencies.filter((currency) => currency.account != null)
-    const currenciesNotAdded = currencies.filter((currency) => currency.account == null)
+    var reportingCurrencies = currencies.filter((currency) => (typeof currency.account !== "undefined"))
+    var notReportingCurrencies = currencies.filter((currency) => (typeof currency.account === "undefined"))
+    var currenciesAdded = reportingCurrencies.filter((currency) => currency.account != null) || []
+    var currenciesNotAdded = reportingCurrencies.filter((currency) => currency.account == null) || []
+    
     this.setState({
       currenciesAdded: currenciesAdded,
-      currenciesNotAdded: currenciesNotAdded
+      currenciesNotAdded: currenciesNotAdded,
+      notReportingCurrencies: notReportingCurrencies
     });
   }
 
   numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  }
-
-  getImageFromChain(chainName){
-    switch(chainName){
-      case "Cosmos":
-        return Cosmos;
-      case "Tezos":
-        return Tezos;
-      case "Dash":
-        return Dash;
-      default:
-        break;
-    }
   }
 
   getBeginningBalance(currency){
@@ -126,7 +114,6 @@ class CurrencyList extends React.Component {
           return beginBalance;
       default:
         return 0;
-        break;
     }
   }
 
@@ -188,11 +175,20 @@ class CurrencyList extends React.Component {
     }
   }
 
+  getYieldString(currency) {
+    if(typeof currency.yield_info === "undefined"){
+      return `Unavailable`;
+    }else{
+      return `${(currency.yield_info.yield * 100).toFixed(2)}%`;
+    }
+  }
+
   render() {
     const { classes } = this.props;
 
     const currenciesAdded = this.state.currenciesAdded || [];
     const currenciesNotAdded = this.state.currenciesNotAdded || [];
+    const notReportingCurrencies = this.state.notReportingCurrencies || [];
 
     return (
       <List className={classes.list}>
@@ -208,7 +204,7 @@ class CurrencyList extends React.Component {
                       <Typography variant="h6" color="textPrimary" className={classes.listText}>{currency.chain}</Typography>
                     </React.Fragment>
                   }
-                  secondary={`${currency.symbol}, Earning ${(currency.yield_info.yield * 100).toFixed(2)}%`}
+                  secondary={`${currency.symbol}, Earning ` + this.getYieldString(currency)}
                 />
                 <div className={classes.listDetail}>
                   <ListItemText
@@ -225,14 +221,14 @@ class CurrencyList extends React.Component {
           ))}
         {currenciesNotAdded.map((currency) => (
           <React.Fragment>
-            <ListItem color="inherit">
+            <ListItem color="inherit" button onClick={(event) => console.log(event)}>
               <ListItemText
                 primary={
                   <React.Fragment>
                     <Typography variant="h6" color="textPrimary" className={classes.listText}>{currency.chain}</Typography>
                   </React.Fragment>
                 }
-                secondary={`${currency.symbol}, Yield ${(currency.yield_info.yield * 100).toFixed(2)}%`}
+                secondary={`${currency.symbol}, Yield ` + this.getYieldString(currency)}
               />
               <Button color="primary" className={classes.button} onClick={(event) => this.props.addAccountOpen(currency, event)}>
                 Add Account
@@ -240,6 +236,23 @@ class CurrencyList extends React.Component {
             </ListItem>
           </React.Fragment>
         ))}
+        {notReportingCurrencies.map((currency) => (
+            <React.Fragment>
+              <ListItem color="inherit" button onClick={(event) => console.log(event)}>
+                <ListItemText
+                  primary={
+                    <React.Fragment className={classes.listText}>
+                      <Typography variant="h6" color="textPrimary" className={classes.listText}>{currency.chain}</Typography>
+                    </React.Fragment>
+                  }
+                  secondary={`${currency.symbol}, Yield ` + this.getYieldString(currency)}
+                />
+                <Button color="primary" disabled className={classes.button}>
+                  Unavailable
+                </Button>
+              </ListItem>
+            </React.Fragment>
+          ))}
       </List>
     );
   }

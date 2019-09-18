@@ -50,7 +50,7 @@ class AddAccount extends React.Component {
                 <DialogTitle id="form-dialog-title">Add {chain} Account</DialogTitle>
                 <DialogContent>
                 <DialogContentText>
-                    To get reporting on your delegation to Staked, please input your {chain} address
+                    To get reporting on your delegation to Staked, please input your {chain} address.
                 </DialogContentText>
                 <TextField
                     autoFocus

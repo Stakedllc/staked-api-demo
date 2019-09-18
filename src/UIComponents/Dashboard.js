@@ -17,7 +17,7 @@ const styles = theme => ({
     display: "flex",
     flexDirection: "column",
     width: 400,
-    marginTop: theme.spacing.unit * 10,
+    marginTop: theme.spacing.unit * 5,
     padding: theme.spacing.unit * 3,
     margin: "auto",
     borderRadius: 5,
@@ -85,6 +85,24 @@ class Dashboard extends React.Component {
         'theme': 'rgba(39, 142, 224, 1)',
         'account': null,
         'yield_info': null
+      },
+      {
+        'chain': 'Terra',
+        'symbol': 'LUNA',
+        'theme': 'rgba(40, 69, 174, 1)',
+        'account': null
+      },
+      {
+        'chain': 'Decred',
+        'symbol': 'DCR',
+        'theme': 'rgba(45, 216, 163, 1)',
+        'yield_info': null
+      },
+      {
+        'chain': 'Horizen',
+        'symbol': 'ZEN',
+        'theme': 'rgba(23, 162, 184, 1)',
+        'yield_info': null
       }
     ],
     addAccountOpen: false,
@@ -125,16 +143,20 @@ class Dashboard extends React.Component {
     var yield_response = await api.get(`/yields?api_key=${api_key}&extended=true&by_key=false`);
     var yield_data = yield_response.data;
     yield_data.forEach((yield_info) => {
-      currencies.map((supported) => {
-        if(supported.chain == yield_info.currency){
-          supported.yield_info = yield_info;
+      currencies.map((currency) => {
+        if(typeof currency.yield_info !== "undefined"){
+          if(currency.chain == yield_info.currency){
+            currency.yield_info = yield_info;
+          }
         }
       })
     })
     
     await this.asyncForEach(currencies, async (currency) => {
-      const timeseries_response = await api.get(`/yields/currency/${currency.chain}/timeseries?api_key=${api_key}&interval=1&num_entries=90`);
-      currency.yield_info.timeseries = timeseries_response.data.timeseries;
+      if(typeof currency.yield_info !== "undefined"){
+        const timeseries_response = await api.get(`/yields/currency/${currency.chain}/timeseries?api_key=${api_key}&interval=1&num_entries=90`);
+        currency.yield_info.timeseries = timeseries_response.data.timeseries;
+      }
     })
     
     this.setState({
