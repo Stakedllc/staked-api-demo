@@ -38,6 +38,11 @@ const styles = theme => ({
     position: "relative",
     marginRight: "0px"
   },
+  listDetailLabel: {
+    position: "relative",
+    marginRight: "0px",
+    color: "textSecondary"
+  },
   listItemSubheader: {
     paddingTop: "10px",
     paddingBottom: "10px"
@@ -118,7 +123,9 @@ class CurrencyList extends React.Component {
                           <Typography variant="h6" align={'right'} className={classes.listLabel}>{this.numberWithCommas(currency.account.balance)}</Typography>
                         </React.Fragment>
                       }
-                      secondary={"Delegation Balance"}
+                      secondary={<React.Fragment>
+                        <Typography variant="body2" align={'right'} className={classes.listDetailLabel}>Delegation Balance</Typography>
+                      </React.Fragment>}
                     />
                   </div>
                 </ListItem>

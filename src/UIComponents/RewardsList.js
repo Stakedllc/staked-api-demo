@@ -22,6 +22,11 @@ const styles = theme => ({
     position: "relative",
     marginLeft: "0px"
   },
+  listDetailLabel: {
+    position: "relative",
+    marginRight: "0px",
+    color: "textSecondary"
+  },
   listLabel: {
     position: "relative",
     marginRight: "0px",
@@ -224,7 +229,11 @@ class RewardsList extends React.Component {
                         <Typography variant="h6" align={'right'} className={classes.listLabel}>{(this.getTotalRewards(currency)).toFixed(2).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}</Typography>
                     </React.Fragment>
                     }
-                    secondary={`${currency.symbol} Earned`}
+                    secondary={
+                        <React.Fragment>
+                            <Typography variant="body2" align={'right'} className={classes.listDetailLabel}>{`${currency.symbol} Earned`}</Typography>
+                        </React.Fragment>
+                    }
                 />
                 </div>
             </ListItem>
