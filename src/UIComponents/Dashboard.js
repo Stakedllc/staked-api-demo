@@ -5,7 +5,10 @@ import LinearProgress from '@material-ui/core/LinearProgress';
 import Navigation from "./Navigation.js";
 import AddAccount from "./AddAccount.js";
 import CurrencyList from "./CurrencyList.js";
-import TxnList from "./TxnList.js";
+import YieldTimeseriesChart from "./YieldTimeseriesChart";
+import Typography from "@material-ui/core/Typography";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
 import api from "../api.js";
 import api_key from "../api_key.js";
 
@@ -14,11 +17,38 @@ const styles = theme => ({
     display: "flex",
     flexDirection: "column",
     width: 400,
-    marginTop: theme.spacing.unit * 15,
+    marginTop: theme.spacing.unit * 10,
     padding: theme.spacing.unit * 3,
     margin: "auto",
     borderRadius: 5,
     boxShadow: "0 3px 5px 2px rgba(0, 0, 0, .1)"
+  },
+  listDetail: {
+    position: "absolute",
+    right: "10px"
+  },
+  avatar: {
+    position: "absolute",
+    left: "0px",
+  },
+  subheader: {
+    position: "relative"
+  },
+  listText: {
+    position: "relative",
+    marginLeft: "0px"
+  },
+  listLabel: {
+    position: "relative",
+    marginRight: "0px"
+  },
+  listItemSubheader: {
+    paddingTop: "10px",
+    paddingBottom: "10px"
+  },
+  button: {
+    position: "absolute",
+    right: "0px"
   }
 });
 
@@ -38,18 +68,21 @@ class Dashboard extends React.Component {
       {
         'chain': 'Cosmos',
         'symbol': 'ATOM',
+        'theme': 'rgba(70, 80, 159, 1)',
         'account': null,
         'yield_info': null
       },
       {
         'chain': 'Tezos',
         'symbol': 'XTZ',
+        'theme': 'rgba(44, 125, 247, 1)',
         'account': null,
         'yield_info': null
       },
       {
         'chain': 'Dash',
         'symbol': 'DASH',
+        'theme': 'rgba(39, 142, 224, 1)',
         'account': null,
         'yield_info': null
       }
@@ -80,26 +113,34 @@ class Dashboard extends React.Component {
     });
   };
 
-  getYields = () => {
+  async asyncForEach(array, callback) {
+    for (let index = 0; index < array.length; index++) {
+      await callback(array[index], index, array);
+    }
+  }
+  
+  getYields = async () => {
     var currencies = this.state.currencies;
-    api.get(`/yields?api_key=${api_key}&extended=true&by_key=false`).then(res => {
-      console.log(res.data);
-      res.data.forEach((yield_info) => {
-        currencies.map((supported) => {
-          if(supported.chain == yield_info.currency){
-            supported.yield_info = yield_info;
-            console.log('here');
-          }
-          console.log(supported.chain);
-          console.log(yield_info);
-        })
+
+    var yield_response = await api.get(`/yields?api_key=${api_key}&extended=true&by_key=false`);
+    var yield_data = yield_response.data;
+    yield_data.forEach((yield_info) => {
+      currencies.map((supported) => {
+        if(supported.chain == yield_info.currency){
+          supported.yield_info = yield_info;
+        }
       })
-      console.log(currencies);
-      this.setState({
-        loading: false,
-        currencies: currencies
-      });
     })
+    
+    await this.asyncForEach(currencies, async (currency) => {
+      const timeseries_response = await api.get(`/yields/currency/${currency.chain}/timeseries?api_key=${api_key}&interval=1&num_entries=90`);
+      currency.yield_info.timeseries = timeseries_response.data.timeseries;
+    })
+    
+    this.setState({
+      loading: false,
+      currencies: currencies
+    });
   }
 
   getReporting = (chain, address) => {
@@ -181,6 +222,12 @@ class Dashboard extends React.Component {
       body = (
         <React.Fragment>
           <CurrencyList currencies={currencies} addAccountOpen={this.addAccountOpen}/>
+          <List className={classes.list}>
+            <ListItem color="inherit" className={classes.listItemSubheader}>
+              <Typography variant="subtitle2" className={classes.avatar} color="textSecondary">Historical Yields</Typography>
+            </ListItem>
+          </List>
+          <YieldTimeseriesChart currencies={currencies}/>
         </React.Fragment>
       );
     }
