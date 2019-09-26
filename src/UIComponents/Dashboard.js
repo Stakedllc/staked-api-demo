@@ -101,7 +101,8 @@ class Dashboard extends React.Component {
         'chain': 'Terra',
         'symbol': 'LUNA',
         'theme': 'rgba(40, 69, 174, 1)',
-        'account': null
+        'account': null,
+        'yield_info': null
       },
       {
         'chain': 'Decred',
@@ -114,7 +115,31 @@ class Dashboard extends React.Component {
         'symbol': 'ZEN',
         'theme': 'rgba(23, 162, 184, 1)',
         'yield_info': null
-      }
+      },
+      {
+        'chain': 'Algorand',
+        'symbol': 'ALGO',
+        'theme': 'rgba(0, 0, 0, 1)',
+        'yield_info': null
+      },
+      {
+        'chain': 'Livepeer',
+        'symbol': 'LPT',
+        'theme': 'rgba(76, 226, 111, 1)',
+        'yield_info': null
+      },
+      {
+        'chain': 'Loom',
+        'symbol': 'LOOM',
+        'theme': 'rgba(74, 145, 226, 1)',
+        'yield_info': null
+      },
+      {
+        'chain': 'Iris',
+        'symbol': 'IRIS',
+        'theme': 'rgba(113, 75, 227, 1)',
+        'yield_info': null
+      },
     ],
     addAccountOpen: false,
     addAccountChain: null,

@@ -12,7 +12,7 @@ const styles = theme => ({
     display: "flex",
     flexDirection: "column",
     flexWrap: "wrap",
-    height: 240,
+    height: 400,
     width: 350,
     position: "relative",
     marginLeft: "0px",

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 var api = axios.create({
-  baseURL: "https://testnet.staked.cloud/api",
+  baseURL: "https://mainnet.staked.cloud/api",
   timeout: 1000000
 });
 
